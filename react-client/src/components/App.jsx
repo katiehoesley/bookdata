@@ -31,13 +31,15 @@ class App extends React.Component {
       ISBN: '',
       formSubmitted: true,
       title: data.items[0].volumeInfo.title,
-      thumbnail: data.items[0].volumeInfo.imageLinks.thumbnail
+      thumbnail: data.items[0].volumeInfo.imageLinks.thumbnail, 
+      description: data.items[0].volumeInfo.description
      })
    })
  }
 
   render () {
-    const currentPage = this.state.formSubmitted === false ? <ISBNform onChange={this.onChange} onSubmit={this.onSubmit}/> : <div><BookData title={this.state.title} thumbnail={this.state.thumbnail}/> <ISBNform onChange={this.onChange} onSubmit={this.onSubmit}/> </div>
+    const currentPage = this.state.formSubmitted === false ? <ISBNform onChange={this.onChange} onSubmit={this.onSubmit}/> 
+    : <div><ISBNform onChange={this.onChange} onSubmit={this.onSubmit}/><BookData title={this.state.title} thumbnail={this.state.thumbnail} description={this.state.description}/></div>
     return (
       <div className='app'>
         { currentPage }
