@@ -1,44 +1,48 @@
 import React from 'react';
-import Clock from './Clock.jsx';
+import BookData from './BookData.jsx';
+import ISBNform from './ISBNform.jsx'; 
 
 class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = { 
-      goalDate: new Date(Date.UTC(2020, 11, 3, 0, 0, 0)).getTime(),
-      now: '',
-      difference: '',
-      days: '',
-      hours: '',
-      minutes: '', 
-      seconds: ''
+      ISBN: '',
+      formSubmitted: false,
+      title: '',
+      thumbnail: ''
     }
+
+    this.onChange = this.onChange.bind(this);
+    this.onSubmit = this.onSubmit.bind(this);
   }
 
-  timer() {
-      this.setState({
-        now: new Date().getTime(),
-        difference: this.state.goalDate - new Date().getTime(), 
-        days: Math.floor((this.state.goalDate - new Date().getTime())/(1000*60*60*24)), 
-        hours: Math.floor((this.state.goalDate - new Date().getTime())/(1000*60*60*24)) ,
-        minutes: Math.floor(((this.state.goalDate - new Date().getTime()) % (1000 * 60 * 60)) / (1000 * 60)),
-        seconds: Math.floor(((this.state.goalDate - new Date().getTime()) % (1000 * 60)) / 1000)
-      });
-  }
+ onChange(e) {
+   this.setState({
+     ISBN: e.target.value
+   })
+ } 
 
-  componentDidMount() {
-    this.intervalID = setInterval(
-      () => this.timer(),
-      1000
-    );
-  }
-
+ onSubmit(e) {
+  let url = `https://www.googleapis.com/books/v1/volumes?q=isbn:${this.state.ISBN}`
+  fetch(url)
+   .then(data => data.json())
+   .then(data => {
+     this.setState({
+      ISBN: '',
+      formSubmitted: true,
+      title: data.items[0].volumeInfo.title,
+      thumbnail: data.items[0].volumeInfo.imageLinks.thumbnail
+     })
+   })
+ }
 
   render () {
+    const currentPage = this.state.formSubmitted === false ? <ISBNform onChange={this.onChange} onSubmit={this.onSubmit}/> : <div><BookData title={this.state.title} thumbnail={this.state.thumbnail}/> <ISBNform onChange={this.onChange} onSubmit={this.onSubmit}/> </div>
     return (
-    <div className='app'>
-      <Clock days={this.state.days} hours={this.state.hours} minutes={this.state.minutes} seconds={this.state.seconds} goalDate={this.state.goalDate}/>
-    </div>)
+      <div className='app'>
+        { currentPage }
+      </div>
+    )
   }
 }
 
