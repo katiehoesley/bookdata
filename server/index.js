@@ -1,12 +1,4 @@
-var express = require('express');
-
-var app = express();
-
-app.use(express.static(__dirname + '/../react-client/dist'));
-
-
-const PORT = 3001; 
-
-app.listen(PORT, function() {
-  console.log(`listening on port ${PORT} !`);
-});
+// TO DO: 
+// - import express & enable it to work with your files 
+// - specify PORT
+// - create functionality where your express server is litening on the correct port
